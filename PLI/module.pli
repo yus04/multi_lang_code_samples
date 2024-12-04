@@ -1,0 +1,98 @@
+*PROCESS SYSTEM(MVS);
+ PTMPPLT: PROC(HLBPTR,CMDBUF,ORIGBLCK) OPTIONS(MAIN,REENTRANT);
+ /********************************************************************/
+ /*                                                                  */
+ /*   5697-B82 (C) COPYRIGHT IBM CORPORATION  1989, 1995             */
+ /*    ALL RIGHTS RESERVED.                                          */
+ /*                                                                  */
+ /*   IEBCOPY   SELECT MEMBER=((CNMS4200,PTMPPLT,R))                 */
+ /*                                                                  */
+ /*   (Explanations included in parentheses should be deleted)       */
+ /*   (after the pertinent information has been filled in.   )       */
+ /*                                                                  */
+ /*   Descriptive Name: High-Level Language PL/I Template            */
+ /*      (This is the more descriptive name or title of the module.) */
+ /*                                                                  */
+ /*   Function:                                                      */
+ /*      Template for writing HLL modules in PL/I.                   */
+ /*      (This is the description of what the module does.)          */
+ /*      (It may be paragraph or pseudocode form.         )          */
+ /*                                                                  */
+ /*   Dependencies:                                                  */
+ /*      (List conditions that must be met in order for this)        */
+ /*      (module to perform.  An example of this might be a )        */
+ /*      (key data area that must already have been built.  )        */
+ /*                                                                  */
+ /* Restrictions:                                                    */
+ /*      (List any limitations this module may have.)                */
+ /*                                                                  */
+ /*   Language: PL/I                                                 */
+ /*                                                                  */
+ /*   Input:                                                         */
+ /*      1)  A pointer to a 4-byte field containing the address of   */
+ /*          the HLB control block.                                  */
+ /*      2)  A varying length character string containing the        */
+ /*          command or message which invoked this program.          */
+ /*          If this program was invoked as a command processor,     */
+ /*          this will be a command string.                          */
+ /*          If this program was invoked as an installation exit     */
+ /*          (other than DSIEX02A), this will be a message string.   */
+ /*          When driven as DSIEX02A-                                */
+ /*          this string will be empty and the message must          */
+ /*          be retrieved from the Initial Data Queue (IDATAQ).      */
+ /*      3)  A 40-byte structure which describes the origin of the   */
+ /*          request that caused execution of this program.          */
+ /*                                                                  */
+ /*   Output:                                                        */
+ /*      (Describe any output from this module.)                     */
+ /*                                                                  */
+ /*   Return Codes: returned in Hlbrc                                */
+ /*    For Command Processors:                                       */
+ /*      0 = normal exit                                             */
+ /*     -5 = cancelled                                               */
+ /*      (List any other return codes meaningful to this module.)    */
+ /*    For Installation Exits:                                       */
+ /*      0 = USERASIS  (Leave the contents of the message buffer     */
+ /*                     unchanged)                                   */
+ /*      4 = USERDROP  (Drop the message buffer)                     */
+ /*      8 = USERSWAP  (Change the contents of the message buffer)   */
+ /*                                                                  */
+ /*   External Module References:                                    */
+ /*      (List modules that are called by this module.)              */
+ /*                                                                  */
+ /*   Change Activity:                                               */
+ /*      date,author: description of changes                         */
+ /*      (Keep a log of the changes made to this module for)         */
+ /*      (future reference.                                )         */
+ /********************************************************************/
+ /********************************************************************/
+ /* NetView High-Level Language include files                        */
+ /********************************************************************/
+ %INCLUDE DSIPLI;                   /* Include the HLL macros        */
+ /********************************************************************/
+ /* HLL Run-time options (Set to Non-Preinitialized regardless of    */
+ /*     the value specified for the DEFAULT keyword of the HLLENV    */
+ /*     command.                                                     */
+ /********************************************************************/
+ DCL HLLOPTS BIT(32) STATIC EXTERNAL
+     INIT('00100000000000000000000000000000');
+ /********************************************************************/
+ /* Parameter declarations                                           */
+ /********************************************************************/
+ DCL HLBPTR   PTR;                  /* Pointer to the HLB            */
+ DCL CMDBUF   CHAR(*) VARYING;      /* Buffer for the command        */
+ DCL ORIGBLCK CHAR(40);             /* Area for the Origin Block     */
+ /********************************************************************/
+ /* Other declarations                                               */
+ /********************************************************************/
+ DCL ORIGIN   PTR;                  /* Pointer to the Origin Block   */
+ DCL ADDR     BUILTIN;              /* Builtin function              */
+ /********************************************************************/
+ /* Initialization                                                   */
+ /********************************************************************/
+ ORIGIN=ADDR(ORIGBLCK);             /* Address of the Origin Block   */
+ /********************************************************************/
+ /* Execution                                                        */
+ /********************************************************************/
+ HLBRC = CNM_GOOD;                  /* Successful completion         */
+ END PTMPPLT;
